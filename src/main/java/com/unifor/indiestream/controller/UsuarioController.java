@@ -31,10 +31,14 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-
     @GetMapping
     public ResponseEntity<List<Usuario>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    // Novo método para editar usuário
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> updateUser(@PathVariable(value = "id") Long userId, @RequestBody Usuario updatedUser) {
+        return ResponseEntity.ok(userService.updateUser(userId, updatedUser));
+    }
 }
