@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -35,5 +36,9 @@ public class UsuarioService {
             user.setDataNascimento(updatedUser.getDataNascimento());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
+    public Optional<Usuario> login(String email, String senha) {
+        return userRepository.findByEmailAndSenha(email, senha);
     }
 }
