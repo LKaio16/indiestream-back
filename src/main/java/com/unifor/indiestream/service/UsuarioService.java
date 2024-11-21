@@ -36,14 +36,23 @@ public class UsuarioService {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setNome(updatedUser.getNome());
-            // Encriptando a nova senha
-            user.setSenha(passwordEncoder.encode(updatedUser.getSenha()));
+            user.setProfissao(updatedUser.getProfissao());
+            user.setHabilidades(updatedUser.getHabilidades());
+
+            // Encripta a senha apenas se uma nova senha for fornecida
+            if (updatedUser.getSenha() != null && !updatedUser.getSenha().isEmpty()) {
+                user.setSenha(passwordEncoder.encode(updatedUser.getSenha()));
+            }
+
             user.setEmail(updatedUser.getEmail());
             user.setImagemUrl(updatedUser.getImagemUrl());
             user.setDataNascimento(updatedUser.getDataNascimento());
+
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
+
 
     public Optional<Usuario> login(String email, String senha) {
         Optional<Usuario> user = userRepository.findByEmail(email);
