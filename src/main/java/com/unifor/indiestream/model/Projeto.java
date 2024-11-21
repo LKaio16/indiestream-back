@@ -1,6 +1,7 @@
 package com.unifor.indiestream.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,7 @@ public class Projeto {
     private String status;
 
     @ManyToMany(mappedBy = "obrasFavoritas")
+    @JsonIgnore
     private Set<Usuario> usuariosFavoritos;
 
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
