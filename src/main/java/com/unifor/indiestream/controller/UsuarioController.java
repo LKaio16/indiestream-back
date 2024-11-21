@@ -1,5 +1,6 @@
 package com.unifor.indiestream.controller;
 
+import com.unifor.indiestream.dto.UsuarioDTO;
 import com.unifor.indiestream.model.Usuario;
 import com.unifor.indiestream.repository.UsuarioRepository;
 import com.unifor.indiestream.service.UsuarioService;
@@ -18,9 +19,6 @@ import java.util.Set;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioRepository userRepository;
-
-    @Autowired
     private UsuarioService userService;
 
     @PostMapping
@@ -35,15 +33,20 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UsuarioDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsersAsDTO());
     }
 
-    // Novo método para editar usuário
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserByIdAsDTO(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUser(@PathVariable(value = "id") Long userId, @RequestBody Usuario updatedUser) {
         return ResponseEntity.ok(userService.updateUser(userId, updatedUser));
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
         return userService.login(loginRequest.getEmail(), loginRequest.getSenha())
@@ -51,10 +54,8 @@ public class UsuarioController {
                     Map<String, Object> responseBody = new HashMap<>();
                     responseBody.put("message", "Login bem-sucedido");
                     responseBody.put("id", user.getId());
-
                     return ResponseEntity.ok(responseBody);
                 })
                 .orElseGet(() -> ResponseEntity.status(401).body(Map.of("message", "Credenciais inválidas")));
     }
-
 }
