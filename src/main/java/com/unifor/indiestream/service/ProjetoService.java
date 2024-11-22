@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,9 +39,18 @@ public class ProjetoService {
     }
 
     public ProjetoDTO createProjeto(Projeto projeto) {
+        if (projeto.getPessoasEnvolvidas() != null && !projeto.getPessoasEnvolvidas().isEmpty()) {
+            // Buscar os usuários pelo ID e adicionar ao projeto
+            Set<Usuario> pessoasEnvolvidas = projeto.getPessoasEnvolvidas().stream()
+                    .map(usuario -> usuarioRepository.findById(usuario.getId())
+                            .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuario.getId())))
+                    .collect(Collectors.toSet());
+            projeto.setPessoasEnvolvidas(pessoasEnvolvidas);
+        }
         Projeto savedProjeto = projetoRepository.save(projeto);
         return convertToDTO(savedProjeto);
     }
+
 
     public ProjetoDTO addPessoaEnvolvida(Long projetoId, Long usuarioId) {
         Projeto projeto = projetoRepository.findById(projetoId)
@@ -50,6 +60,18 @@ public class ProjetoService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
 
         projeto.getPessoasEnvolvidas().add(usuario);
+        Projeto updatedProjeto = projetoRepository.save(projeto);
+        return convertToDTO(updatedProjeto);
+    }
+
+    public ProjetoDTO removePessoaEnvolvida(Long projetoId, Long usuarioId) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado: " + projetoId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
+
+        projeto.getPessoasEnvolvidas().remove(usuario);
         Projeto updatedProjeto = projetoRepository.save(projeto);
         return convertToDTO(updatedProjeto);
     }

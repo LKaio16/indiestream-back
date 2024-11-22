@@ -39,6 +39,11 @@ public class ProjetoController {
         return ResponseEntity.ok(projetoService.addPessoaEnvolvida(id, usuarioId));
     }
 
+    @DeleteMapping("/{id}/remove-pessoa/{usuarioId}")
+    public ResponseEntity<ProjetoDTO> removePessoaEnvolvida(@PathVariable Long id, @PathVariable Long usuarioId) {
+        return ResponseEntity.ok(projetoService.removePessoaEnvolvida(id, usuarioId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProjeto(@PathVariable Long id) {
         projetoService.deleteProjeto(id);

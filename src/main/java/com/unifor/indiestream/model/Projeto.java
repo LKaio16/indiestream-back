@@ -17,7 +17,7 @@ import java.util.Set;
 public class Projeto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID
     @Column(name = "id_projeto")
     private Long id;
 
