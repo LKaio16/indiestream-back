@@ -77,6 +77,11 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
+    public Usuario getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
+    }
+
     UsuarioDTO convertToDTO(Usuario user) {
         return UsuarioDTO.builder()
                 .id(user.getId())
