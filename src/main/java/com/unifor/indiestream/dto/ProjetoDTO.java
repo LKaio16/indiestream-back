@@ -1,20 +1,13 @@
 package com.unifor.indiestream.dto;
 
-import com.unifor.indiestream.model.Comentario;
-import com.unifor.indiestream.model.LinhaDoTempo;
-import com.unifor.indiestream.model.Usuario;
-import com.unifor.indiestream.repository.LinhaDoTempoRepository;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @Builder
 public class ProjetoDTO {
-
     private Long id;
     private String titulo;
     private String descricao;
@@ -22,7 +15,7 @@ public class ProjetoDTO {
     private String imagemUrl;
     private String tipo;
     private String status;
-    private List<UsuarioDTO> pessoasEnvolvidas;
-    private List<LinhaDoTempo> linhaDoTempo;
-    private List<Comentario> comentarios;
+    private List<PessoaEnvolvidaDTO> pessoasEnvolvidas; // Campos reduzidos
+    private List<LinhaDoTempoDTO> linhaDoTempo;
+    private List<ComentarioDTO> comentarios; // Campos reduzidos
 }

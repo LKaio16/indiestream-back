@@ -18,9 +18,15 @@ public class ProjetoController {
     private ProjetoService projetoService;
 
     @GetMapping
-    public ResponseEntity<List<ProjetoDTO>> getAllProjetos() {
+    public ResponseEntity<List<ProjetoDTO>> getProjetos(@RequestParam(required = false) Long userId) {
+        if (userId != null) {
+            // Chama o serviço para buscar os projetos do usuário específico
+            return ResponseEntity.ok(projetoService.getProjetosByUserId(userId));
+        }
+        // Caso nenhum userId seja fornecido, retorna todos os projetos
         return ResponseEntity.ok(projetoService.getAllProjetos());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProjetoDTO> getProjetoById(@PathVariable Long id) {

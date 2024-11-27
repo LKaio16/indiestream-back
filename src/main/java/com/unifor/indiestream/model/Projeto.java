@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,8 +39,10 @@ public class Projeto {
     @JsonIgnore
     private Set<Usuario> usuariosFavoritos;
 
-    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
-    private Set<LinhaDoTempo> linhaDoTempo;
+    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Evita serializar a lista de linhaDoTempo no projeto
+    private List<LinhaDoTempo> linhaDoTempo;
+
 
     @ManyToMany
     @JoinTable(
