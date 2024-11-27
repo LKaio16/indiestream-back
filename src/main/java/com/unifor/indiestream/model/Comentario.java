@@ -1,6 +1,7 @@
 package com.unifor.indiestream.model;
 
-
+import com.unifor.indiestream.model.Projeto;
+import com.unifor.indiestream.model.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class Comentario {
     @Column(name = "id_comentario")
     private Long id;
 
+    @Column(nullable = false)
     private String texto;
 
     @ManyToOne
