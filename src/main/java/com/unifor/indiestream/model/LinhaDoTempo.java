@@ -1,6 +1,7 @@
 package com.unifor.indiestream.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,5 +29,7 @@ public class LinhaDoTempo {
 
     @ManyToOne
     @JoinColumn(name = "id_projeto", nullable = false)
+    @JsonBackReference // Evita que o Jackson serialize essa relação
     private Projeto projeto;
+
 }
