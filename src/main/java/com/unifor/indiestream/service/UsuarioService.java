@@ -35,6 +35,7 @@ public class UsuarioService {
         userRepository.deleteById(id);
     }
 
+
     public Usuario updateUser(Long id, Usuario updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
@@ -42,18 +43,21 @@ public class UsuarioService {
             user.setProfissao(updatedUser.getProfissao());
             user.setHabilidades(updatedUser.getHabilidades());
 
-            // Encripta a senha apenas se uma nova senha for fornecida
-            if (updatedUser.getSenha() != null && !updatedUser.getSenha().isEmpty()) {
-                user.setSenha(passwordEncoder.encode(updatedUser.getSenha()));
-            }
+            // Atualiza a senha apenas se for fornecida no payload
+            //if (updatedUser.getSenha() != null && !updatedUser.getSenha().trim().isEmpty()) {
+            //    user.setSenha(passwordEncoder.encode(updatedUser.getSenha()));
+            //}
 
             user.setEmail(updatedUser.getEmail());
             user.setImagemUrl(updatedUser.getImagemUrl());
             user.setDataNascimento(updatedUser.getDataNascimento());
+            user.setRedesSociais(updatedUser.getRedesSociais());
+            user.setSobreMin(updatedUser.getSobreMin());
 
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
 
 
 
