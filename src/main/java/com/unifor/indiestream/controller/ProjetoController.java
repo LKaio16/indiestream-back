@@ -55,4 +55,23 @@ public class ProjetoController {
         projetoService.deleteProjeto(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/add-solicitante/{usuarioId}")
+    public ResponseEntity<ProjetoDTO> addSolicitante(@PathVariable Long id, @PathVariable Long usuarioId) {
+        return ResponseEntity.ok(projetoService.addSolicitante(id, usuarioId));
+    }
+
+    @PutMapping("/{id}/remove-solicitante/{usuarioId}")
+    public ResponseEntity<ProjetoDTO> removeSolicitante(
+            @PathVariable Long id,
+            @PathVariable Long usuarioId) {
+        return ResponseEntity.ok(projetoService.removeSolicitante(id, usuarioId));
+    }
+
+    @PutMapping("/{id}/set-criador/{usuarioId}")
+    public ResponseEntity<ProjetoDTO> setUsuarioCriador(@PathVariable Long id, @PathVariable Long usuarioId) {
+        return ResponseEntity.ok(projetoService.setUsuarioCriador(id, usuarioId));
+    }
+
+
 }

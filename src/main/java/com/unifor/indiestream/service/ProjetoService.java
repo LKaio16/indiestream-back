@@ -67,9 +67,11 @@ public class ProjetoService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
 
         projeto.getPessoasEnvolvidas().add(usuario);
+        projeto.getUsuariosSolicitantes().remove(usuario); // Remove da lista de solicitantes
         Projeto updatedProjeto = projetoRepository.save(projeto);
         return convertToDTO(updatedProjeto);
     }
+
 
     public ProjetoDTO removePessoaEnvolvida(Long projetoId, Long usuarioId) {
         Projeto projeto = projetoRepository.findById(projetoId)
@@ -83,11 +85,53 @@ public class ProjetoService {
         return convertToDTO(updatedProjeto);
     }
 
+    public ProjetoDTO setUsuarioCriador(Long projetoId, Long usuarioId) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado: " + projetoId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
+        projeto.setUsuarioCriador(usuario);
+        Projeto updatedProjeto = projetoRepository.save(projeto);
+        return convertToDTO(updatedProjeto);
+    }
+
+
+
     public void deleteProjeto(Long id) {
         if (!projetoRepository.existsById(id)) {
             throw new RuntimeException("Projeto não encontrado: " + id);
         }
         projetoRepository.deleteById(id);
+    }
+
+    public ProjetoDTO addSolicitante(Long projetoId, Long usuarioId) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado: " + projetoId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
+
+        projeto.getUsuariosSolicitantes().add(usuario);
+        Projeto updatedProjeto = projetoRepository.save(projeto);
+        return convertToDTO(updatedProjeto);
+    }
+
+
+    public ProjetoDTO removeSolicitante(Long projetoId, Long usuarioId) {
+        Projeto projeto = projetoRepository.findById(projetoId)
+                .orElseThrow(() -> new RuntimeException("Projeto não encontrado: " + projetoId));
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
+
+        if (projeto.getUsuariosSolicitantes().remove(usuario)) {
+            projetoRepository.save(projeto);
+        } else {
+            throw new RuntimeException("Usuário não está na lista de solicitantes.");
+        }
+
+        return convertToDTO(projeto);
     }
 
     public ProjetoDTO convertToDTO(Projeto projeto) {
@@ -99,6 +143,10 @@ public class ProjetoService {
                 .imagemUrl(projeto.getImagemUrl())
                 .tipo(projeto.getTipo())
                 .status(projeto.getStatus())
+                .usuarioCriador(projeto.getUsuarioCriador() != null ? convertPessoaToDTO(projeto.getUsuarioCriador()) : null)
+                .usuariosSolicitantes(projeto.getUsuariosSolicitantes().stream()
+                        .map(this::convertPessoaToDTO)
+                        .toList())
                 .pessoasEnvolvidas(projeto.getPessoasEnvolvidas().stream()
                         .map(this::convertPessoaToDTO)
                         .toList())
@@ -110,6 +158,7 @@ public class ProjetoService {
                         .toList())
                 .build();
     }
+
 
     private PessoaEnvolvidaDTO convertPessoaToDTO(Usuario usuario) {
         return PessoaEnvolvidaDTO.builder()

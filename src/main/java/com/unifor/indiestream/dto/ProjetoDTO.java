@@ -15,7 +15,10 @@ public class ProjetoDTO {
     private String imagemUrl;
     private String tipo;
     private String status;
-    private List<PessoaEnvolvidaDTO> pessoasEnvolvidas; // Campos reduzidos
+    private PessoaEnvolvidaDTO usuarioCriador;
+    private List<PessoaEnvolvidaDTO> usuariosSolicitantes;
+    private List<PessoaEnvolvidaDTO> pessoasEnvolvidas;
     private List<LinhaDoTempoDTO> linhaDoTempo;
-    private List<ComentarioDTO> comentarios; // Campos reduzidos
+    private List<ComentarioDTO> comentarios;
 }
+

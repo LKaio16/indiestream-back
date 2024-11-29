@@ -18,7 +18,7 @@ import java.util.Set;
 public class Projeto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_projeto")
     private Long id;
 
@@ -35,14 +35,17 @@ public class Projeto {
 
     private String status;
 
-    @ManyToMany(mappedBy = "obrasFavoritas")
-    @JsonIgnore
-    private Set<Usuario> usuariosFavoritos;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario_criador")
+    private Usuario usuarioCriador; // Relacionamento com o criador do projeto
 
-    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Evita serializar a lista de linhaDoTempo no projeto
-    private List<LinhaDoTempo> linhaDoTempo;
-
+    @ManyToMany
+    @JoinTable(
+            name = "projeto_usuarios_solicitantes",
+            joinColumns = @JoinColumn(name = "id_projeto"),
+            inverseJoinColumns = @JoinColumn(name = "id_usuario")
+    )
+    private Set<Usuario> usuariosSolicitantes; // Lista de usuários solicitantes
 
     @ManyToMany
     @JoinTable(
@@ -51,6 +54,10 @@ public class Projeto {
             inverseJoinColumns = @JoinColumn(name = "id_usuario")
     )
     private Set<Usuario> pessoasEnvolvidas;
+
+    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<LinhaDoTempo> linhaDoTempo;
 
     @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL)
     private Set<Comentario> comentarios;
