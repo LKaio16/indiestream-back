@@ -36,9 +36,10 @@ public class ProjetoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjetoDTO> createProjeto(@RequestBody Projeto projeto) {
-        return ResponseEntity.ok(projetoService.createProjeto(projeto));
+    public ResponseEntity<ProjetoDTO> createProjeto(@RequestBody Projeto projeto, @RequestParam Long usuarioCriadorId) {
+        return ResponseEntity.ok(projetoService.createProjeto(projeto, usuarioCriadorId));
     }
+
 
     @PutMapping("/{id}/add-pessoa/{usuarioId}")
     public ResponseEntity<ProjetoDTO> addPessoaEnvolvida(@PathVariable Long id, @PathVariable Long usuarioId) {

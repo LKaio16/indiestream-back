@@ -45,18 +45,26 @@ public class ProjetoService {
                 .toList();
     }
 
-    public ProjetoDTO createProjeto(Projeto projeto) {
+    public ProjetoDTO createProjeto(Projeto projeto, Long usuarioCriadorId) {
+        // Verificar e definir o criador do projeto
+        Usuario usuarioCriador = usuarioRepository.findById(usuarioCriadorId)
+                .orElseThrow(() -> new RuntimeException("Usuário criador não encontrado: " + usuarioCriadorId));
+        projeto.setUsuarioCriador(usuarioCriador);
+
+        // Verificar e associar pessoas envolvidas, se houver
         if (projeto.getPessoasEnvolvidas() != null && !projeto.getPessoasEnvolvidas().isEmpty()) {
-            // Buscar os usuários pelo ID e adicionar ao projeto
             Set<Usuario> pessoasEnvolvidas = projeto.getPessoasEnvolvidas().stream()
                     .map(usuario -> usuarioRepository.findById(usuario.getId())
                             .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuario.getId())))
                     .collect(Collectors.toSet());
             projeto.setPessoasEnvolvidas(pessoasEnvolvidas);
         }
+
+        // Salvar o projeto
         Projeto savedProjeto = projetoRepository.save(projeto);
         return convertToDTO(savedProjeto);
     }
+
 
 
     public ProjetoDTO addPessoaEnvolvida(Long projetoId, Long usuarioId) {
@@ -144,20 +152,21 @@ public class ProjetoService {
                 .tipo(projeto.getTipo())
                 .status(projeto.getStatus())
                 .usuarioCriador(projeto.getUsuarioCriador() != null ? convertPessoaToDTO(projeto.getUsuarioCriador()) : null)
-                .usuariosSolicitantes(projeto.getUsuariosSolicitantes().stream()
-                        .map(this::convertPessoaToDTO)
-                        .toList())
-                .pessoasEnvolvidas(projeto.getPessoasEnvolvidas().stream()
-                        .map(this::convertPessoaToDTO)
-                        .toList())
-                .linhaDoTempo(projeto.getLinhaDoTempo().stream()
-                        .map(this::convertLinhaToDTO)
-                        .toList())
-                .comentarios(projeto.getComentarios().stream()
-                        .map(this::convertComentarioToDTO)
-                        .toList())
+                .usuariosSolicitantes(projeto.getUsuariosSolicitantes() != null
+                        ? projeto.getUsuariosSolicitantes().stream().map(this::convertPessoaToDTO).toList()
+                        : List.of()) // Retorna uma lista vazia se null
+                .pessoasEnvolvidas(projeto.getPessoasEnvolvidas() != null
+                        ? projeto.getPessoasEnvolvidas().stream().map(this::convertPessoaToDTO).toList()
+                        : List.of()) // Retorna uma lista vazia se null
+                .linhaDoTempo(projeto.getLinhaDoTempo() != null
+                        ? projeto.getLinhaDoTempo().stream().map(this::convertLinhaToDTO).toList()
+                        : List.of()) // Retorna uma lista vazia se null
+                .comentarios(projeto.getComentarios() != null
+                        ? projeto.getComentarios().stream().map(this::convertComentarioToDTO).toList()
+                        : List.of()) // Retorna uma lista vazia se null
                 .build();
     }
+
 
 
     private PessoaEnvolvidaDTO convertPessoaToDTO(Usuario usuario) {
