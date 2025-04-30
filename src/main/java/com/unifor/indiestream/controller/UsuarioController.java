@@ -5,7 +5,9 @@ import com.unifor.indiestream.dto.UsuarioDTO;
 import com.unifor.indiestream.model.*;
 import com.unifor.indiestream.repository.*;
 import com.unifor.indiestream.service.UsuarioService;
+import com.unifor.indiestream.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +38,8 @@ public class UsuarioController {
     @Autowired
     private HabilidadeRepository habilidadeRepository;
 
-
-
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping
     public ResponseEntity<Usuario> createUser(@RequestBody Usuario user) {
@@ -109,11 +111,16 @@ public class UsuarioController {
     public ResponseEntity<?> login(@RequestBody Usuario loginRequest) {
         return userService.login(loginRequest.getEmail(), loginRequest.getSenha())
                 .map(user -> {
-                    Map<String, Object> responseBody = new HashMap<>();
-                    responseBody.put("message", "Login bem-sucedido");
-                    responseBody.put("id", user.getId());
-                    return ResponseEntity.ok(responseBody);
+                    String token = jwtUtil.generateToken(user.getId());
+
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("message", "Login bem-sucedido");
+                    response.put("id", user.getId());
+                    response.put("token", token);
+
+                    return ResponseEntity.ok(response);
                 })
-                .orElseGet(() -> ResponseEntity.status(401).body(Map.of("message", "Credenciais inválidas")));
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message", "Credenciais inválidas")));
     }
 }
