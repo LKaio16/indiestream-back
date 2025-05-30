@@ -94,6 +94,7 @@ public class UsuarioService {
                 .email(user.getEmail())
                 .sobreMim(user.getSobreMin())
                 .imagemUrl(user.getImagemUrl())
+                .isPremium(user.getPremium())
                 .cidadeId(user.getCidade() != null ? user.getCidade().getId() : null)
                 .cidadeNome(user.getCidade() != null ? user.getCidade().getNome() : null)
                 .estadoId(user.getEstado() != null ? user.getEstado().getId() : null)

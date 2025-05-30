@@ -29,4 +29,5 @@ public class UsuarioDTO {
     private Set<String> redesSociais;
     private Set<Habilidade> habilidades;
     private List<ProjetoDTO> obrasFavoritas;
+    private Boolean isPremium;
 }
